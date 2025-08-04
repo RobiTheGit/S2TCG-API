@@ -13,14 +13,18 @@ global XPOS, INDEX, _2PINDEX
 XPOS = 0
 INDEX = 0
 _2PINDEX = 0
-def Generate(TextToGenerate):
+
+def Generate(TextToGenerate, Zone, Label_Type):
     REGEX_STEP = re.sub(r"[^a-zA-Z ]", "", TextToGenerate)     # remove unmapped characters
     LENGTH_STEP = REGEX_STEP.replace(" ", "")
     L_STEP_HEX = hex(len(LENGTH_STEP)).upper()
     POS_AFTER_0 = False    
     if len(REGEX_STEP) <= 8:
         POS_AFTER_0 = True
-    StartLoc = [0x70,0x60,0x50,0x40,0x30,0x20, 0x10, 0x00, 0xFFF0, 0xFFE0, 0xFFD0, 0xFFC0, 0xFFB0, 0xFFA0, 0xFF90] #Don't exceed 0xFF90, otherwise, funky things may happen    
+    StartLoc = [0x70,0x60,0x50,0x40,0x30,0x20, 0x10, 0x00, 0xFFF0, 0xFFE0, 0xFFD0, 0xFFC0, 0xFFB0, 0xFFA0, 0xFF90]
+    ZONE_LIST = ["EHZ","CPZ","ARZ","CNZ","HTZ","MCZ","OOZ","MTZ","SCZ","WFZ","DEZ","HPZ"]
+    DISASM_LABELS = ['word_147E8', 'word_14A1E', 'word_14A88', 'word_149C4', 'word_14894', 'word_14972', 'word_14930', 'word_14842', 'word_14AE2', 'word_14B24', 'word_14B86', 'word_148CE']
+    
     XPOS = StartLoc[len(REGEX_STEP)]
     INDEX = 0x5DE #S2 maxes out at 5FA in the stock title cards
     WIDTH = 0x5
@@ -30,7 +34,11 @@ def Generate(TextToGenerate):
     CURR_CHAR = ''
     ALL_CHAR = []
     USED_CHARS = []
-    print(f"TC_EHZ: dc.w {L_STEP_HEX.replace('0X', '$')}")
+    if Label_Type == "Old":
+        _tempindex = ZONE_LIST.index(Zone)
+        print(f"{DISASM_LABELS[_tempindex]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
+    else:
+        print(f"TC_{ZONE_LIST[ZONE_LIST.index(Zone)]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
     for CURR_CHAR in REGEX_STEP:
         ALL_CHAR.append(CURR_CHAR.upper())
 #=================================================================
@@ -105,4 +113,4 @@ def Generate(TextToGenerate):
     dc.w 5,	$8584, $82C2, $00 ;N
     dc.w 5,	$8580, $82C0, $00 ;E
 """ 
-Generate("EMERALD HILL")
+Generate("EMERALD HILL", "EHZ", "")
