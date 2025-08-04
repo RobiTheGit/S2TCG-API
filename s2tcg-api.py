@@ -106,11 +106,4 @@ def Generate(TextToGenerate, Zone, Label_Type):
             INDEX += 0x4
             _2PINDEX += 0x2
 
-    
-"""
-    dc.w 5,	$858C, $82C6, $00 ;Z
-    dc.w 5,	$8588, $82C4, $00 ;O
-    dc.w 5,	$8584, $82C2, $00 ;N
-    dc.w 5,	$8580, $82C0, $00 ;E
-""" 
 Generate("EMERALD HILL", "EHZ", "")
