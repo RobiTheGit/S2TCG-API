@@ -30,7 +30,7 @@ def Generate(TextToGenerate):
     CURR_CHAR = ''
     ALL_CHAR = []
     USED_CHARS = []
-    print(f"dc.w {L_STEP_HEX.replace('0X', '$')}")
+    print(f"TC_EHZ: dc.w {L_STEP_HEX.replace('0X', '$')}")
     for CURR_CHAR in REGEX_STEP:
         ALL_CHAR.append(CURR_CHAR.upper())
 #=================================================================
