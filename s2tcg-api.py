@@ -4,6 +4,8 @@
 # This is not intended to be a standalone program, but the base code for generating the mappings
 # May be compatible for website usage
 
+#TODO: Make the prints into writes to a list or file
+
 import os
 import sys
 import re
@@ -34,11 +36,12 @@ def Generate(TextToGenerate, Zone, Label_Type):
     CURR_CHAR = ''
     ALL_CHAR = []
     USED_CHARS = []
+    OUTPUT = []
     if Label_Type == "Old":
         _tempindex = ZONE_LIST.index(Zone)
-        print(f"{DISASM_LABELS[_tempindex]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
+        OUTPUT.append(f"{DISASM_LABELS[_tempindex]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
     else:
-        print(f"TC_{ZONE_LIST[ZONE_LIST.index(Zone)]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
+        OUTPUT.append(f"TC_{ZONE_LIST[ZONE_LIST.index(Zone)]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
     for CURR_CHAR in REGEX_STEP:
         ALL_CHAR.append(CURR_CHAR.upper())
 #=================================================================
@@ -52,7 +55,7 @@ def Generate(TextToGenerate, Zone, Label_Type):
          
             REUSED_CHAR = USED_CHARS.index(CURR_CHAR)
             REUSED_INDEX = INDECIES[REUSED_CHAR]
-            print(f"\t" + REUSED_INDEX + f" {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
+            OUTPUT.append(f"\t" + REUSED_INDEX + f" {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
             if CURR_CHAR == "I":
                 XPOS += 0x8
             elif CURR_CHAR == "M" or CURR_CHAR == "W":
@@ -61,7 +64,7 @@ def Generate(TextToGenerate, Zone, Label_Type):
                 XPOS += 0x10
         elif CURR_CHAR == "I":
             WIDTH = 0x1
-            print(f"\tdc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()}, {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
+            OUTPUT.append(f"\tdc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()}, {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
             USED_CHARS.append(CURR_CHAR)
             INDECIES.append(f"dc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()},")
 
@@ -72,28 +75,28 @@ def Generate(TextToGenerate, Zone, Label_Type):
             WIDTH = 0x9
             INDECIES.append(f"dc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()},")
             USED_CHARS.append(CURR_CHAR)
-            print(f"\tdc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()}, {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
+            OUTPUT.append(f"\tdc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()}, {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
             XPOS += 0x18
             INDEX += 0x6
             _2PINDEX += 0x4
         elif CURR_CHAR == "Z":
 
-            print(f"\tdc.w $5, $858C, $82C6, {hex(XPOS).replace('0x', '$').upper()} ;Z")
+            OUTPUT.append(f"\tdc.w $5, $858C, $82C6, {hex(XPOS).replace('0x', '$').upper()} ;Z")
             XPOS += 0x10
         elif CURR_CHAR == "O":
 
-            print(f"\tdc.w $5, $8588, $82C4, {hex(XPOS).replace('0x', '$').upper()} ;O")
+            OUTPUT.append(f"\tdc.w $5, $8588, $82C4, {hex(XPOS).replace('0x', '$').upper()} ;O")
             XPOS += 0x10
         elif CURR_CHAR == "N":
 
-            print(f"\tdc.w $5, $8584, $82C2, {hex(XPOS).replace('0x', '$').upper()} ;N")
+            OUTPUT.append(f"\tdc.w $5, $8584, $82C2, {hex(XPOS).replace('0x', '$').upper()} ;N")
             XPOS += 0x10
         elif CURR_CHAR == "E":
 
-            print(f"\tdc.w $5, $8580, $82C0, {hex(XPOS).replace('0x', '$').upper()} ;E")
+            OUTPUT.append(f"\tdc.w $5, $8580, $82C0, {hex(XPOS).replace('0x', '$').upper()} ;E")
             XPOS += 0x10
         elif CURR_CHAR == " " or CURR_CHAR == "":        
-            print("")
+            OUTPUT.append("")
             XPOS += 0x10
         
         else:
@@ -101,9 +104,12 @@ def Generate(TextToGenerate, Zone, Label_Type):
             USED_CHARS.append(CURR_CHAR)
             INDECIES.append(f"dc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()},")
 
-            print(f"\tdc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()}, {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
+            OUTPUT.append(f"\tdc.w {hex(WIDTH).replace('0x', '$').upper()}, {hex(INDEX+0x8000).replace('0x', '$').upper()}, {hex(_2PINDEX+0x8000).replace('0x', '$').upper()}, {hex(XPOS).replace('0x', '$').upper()} ;{CURR_CHAR}")
             XPOS += 0x10
             INDEX += 0x4
             _2PINDEX += 0x2
-
+    for x in OUTPUT:
+        print(x)
+    return OUTPUT
 Generate("EMERALD HILL", "EHZ", "")
+
