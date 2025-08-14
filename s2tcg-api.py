@@ -37,7 +37,7 @@ def Generate(TextToGenerate, Zone, Label_Type):
     ALL_CHAR = []
     USED_CHARS = []
     OUTPUT = []
-    if Label_Type == "Old":
+    if Label_Type == "OLD":
         _tempindex = ZONE_LIST.index(Zone)
         OUTPUT.append(f"{DISASM_LABELS[_tempindex]}: dc.w {L_STEP_HEX.replace('0X', '$')}")
     else:
