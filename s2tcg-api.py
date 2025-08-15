@@ -6,8 +6,7 @@
 
 #TODO: Make the prints into writes to a list or file
 
-import os
-import sys
+
 import re
 
 DisasmLabel = 0 # Determine if we want to use generic TC_XXZ names or the disasm labels
