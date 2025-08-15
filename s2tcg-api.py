@@ -111,5 +111,7 @@ def Generate(TextToGenerate, Zone, Label_Type):
     for x in OUTPUT:
         print(x)
     return OUTPUT
-Generate("EMERALD HILL", "EHZ", "")
+    
+if __name__ == "__main__":
+    Generate("EMERALD HILL", "EHZ", "")
 
